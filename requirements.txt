@@ -1,0 +1,8 @@
+# No external packages required.
+# This project uses Python's built-in libraries:
+# tkinter
+# math
+# ast
+# operator
+# json
+# os
