@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Scientific Calculator</title>
+  <meta name="description" content="A modern, responsive scientific calculator with memory, history, dark/light themes, and full keyboard support.">
+  <meta name="theme-color" content="#171717">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+
+  <div class="app-wrapper">
+    <!-- Calculator Card -->
+    <main class="calculator-card" role="region" aria-label="Scientific Calculator">
+      
+      <!-- Header -->
+      <header class="calc-header">
+        <h1 class="calc-title">
+          <span class="icon" aria-hidden="true">🧮</span>
+          <span>SCIENTIFIC CALCULATOR</span>
+        </h1>
+        <div class="header-badges">
+          <span id="memory-badge" class="badge memory-badge hidden" title="Memory contains value">M</span>
+          <span class="badge mode-badge" title="Trigonometric functions use degrees">DEG</span>
+        </div>
+      </header>
+
+      <!-- Display -->
+      <div class="display-container">
+        <div id="sub-display" class="sub-display" aria-live="polite"></div>
+        <div class="main-display-row">
+          <input 
+            type="text" 
+            id="display" 
+            class="main-display" 
+            placeholder="0" 
+            autocomplete="off" 
+            spellcheck="false"
+            readonly
+            aria-label="Calculator input and result"
+          >
+        </div>
+      </div>
+
+      <!-- Keypad Grid -->
+      <div class="keypad-grid" role="group" aria-label="Calculator keys">
+        
+        <!-- Row 1: Memory & Trig -->
+        <button type="button" class="btn btn-sci" data-action="MC" title="Memory Clear">MC</button>
+        <button type="button" class="btn btn-sci" data-action="MR" title="Memory Recall">MR</button>
+        <button type="button" class="btn btn-sci" data-action="M+" title="Memory Add">M+</button>
+        <button type="button" class="btn btn-sci" data-action="M-" title="Memory Subtract">M-</button>
+        <button type="button" class="btn btn-sci" data-action="sin" title="Sine (degrees)">sin</button>
+        <button type="button" class="btn btn-sci" data-action="cos" title="Cosine (degrees)">cos</button>
+
+        <!-- Row 2: Sci Functions & Constants -->
+        <button type="button" class="btn btn-sci" data-action="tan" title="Tangent (degrees)">tan</button>
+        <button type="button" class="btn btn-sci" data-action="sqrt" title="Square Root">√</button>
+        <button type="button" class="btn btn-sci" data-action="log" title="Logarithm (base 10)">log</button>
+        <button type="button" class="btn btn-sci" data-action="ln" title="Natural Logarithm (ln)">ln</button>
+        <button type="button" class="btn btn-sci" data-action="pi" title="Pi constant (π)">π</button>
+        <button type="button" class="btn btn-sci" data-action="e" title="Euler's number (e)">e</button>
+
+        <!-- Row 3: 7 8 9 ÷ % ⌫ -->
+        <button type="button" class="btn btn-num" data-action="7">7</button>
+        <button type="button" class="btn btn-num" data-action="8">8</button>
+        <button type="button" class="btn btn-num" data-action="9">9</button>
+        <button type="button" class="btn btn-op" data-action="÷" title="Divide">÷</button>
+        <button type="button" class="btn btn-op" data-action="%" title="Percentage">%</button>
+        <button type="button" class="btn btn-op" data-action="⌫" title="Backspace">⌫</button>
+
+        <!-- Row 4: 4 5 6 × x² ^ -->
+        <button type="button" class="btn btn-num" data-action="4">4</button>
+        <button type="button" class="btn btn-num" data-action="5">5</button>
+        <button type="button" class="btn btn-num" data-action="6">6</button>
+        <button type="button" class="btn btn-op" data-action="×" title="Multiply">×</button>
+        <button type="button" class="btn btn-op" data-action="x²" title="Square">x²</button>
+        <button type="button" class="btn btn-op" data-action="^" title="Power">^</button>
+
+        <!-- Row 5: 1 2 3 − + ( -->
+        <button type="button" class="btn btn-num" data-action="1">1</button>
+        <button type="button" class="btn btn-num" data-action="2">2</button>
+        <button type="button" class="btn btn-num" data-action="3">3</button>
+        <button type="button" class="btn btn-op" data-action="−" title="Subtract">−</button>
+        <button type="button" class="btn btn-op" data-action="+" title="Add">+</button>
+        <button type="button" class="btn btn-op" data-action="(" title="Open Parenthesis">(</button>
+
+        <!-- Row 6: 0 . ) = -->
+        <button type="button" class="btn btn-num" data-action="0">0</button>
+        <button type="button" class="btn btn-num" data-action=".">.</button>
+        <button type="button" class="btn btn-op" data-action=")" title="Close Parenthesis">)</button>
+        <button type="button" class="btn btn-equal btn-span-3" data-action="=" title="Calculate">=</button>
+
+      </div>
+
+      <!-- Bottom Control Actions -->
+      <div class="bottom-actions">
+        <button type="button" id="btn-ac" class="btn btn-clear-all" data-action="AC" title="All Clear">AC</button>
+        <button type="button" id="btn-ce" class="btn btn-op" data-action="CE" title="Clear Entry">CE</button>
+        <button type="button" id="btn-sign" class="btn btn-op" data-action="±" title="Toggle Positive / Negative">±</button>
+        <button type="button" id="btn-history-toggle" class="btn btn-history-action" title="View Calculation History">📜 History</button>
+      </div>
+
+      <!-- Theme Switcher -->
+      <div class="theme-bar">
+        <button type="button" id="theme-btn" class="theme-toggle-btn" aria-label="Toggle dark and light theme">
+          <span id="theme-btn-icon">☀️</span>
+          <span id="theme-btn-text">Light Mode</span>
+        </button>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Modern Scientific Calculator &bull; Desktop & Web Edition</p>
+    </footer>
+  </div>
+
+  <!-- History Modal Dialog -->
+  <div id="history-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="history-modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="history-modal-title" class="modal-title">📜 Calculation History</h2>
+        <button type="button" id="btn-close-history" class="modal-close-btn" aria-label="Close history modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <ul id="history-list" class="history-list">
+          <li class="history-empty">No calculations yet.</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="btn-clear-history" class="btn btn-clear-history">Clear History</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="alert" aria-live="assertive"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

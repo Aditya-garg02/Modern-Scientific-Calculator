@@ -1,0 +1,575 @@
+/* =========================================================
+   Modern Scientific Calculator Stylesheet
+   Faithful to Python Tkinter Palette + Modern Web Aesthetics
+   ========================================================= */
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+}
+
+/* ---------------------------------------------------------
+   Theme Variables (Tkinter exact colors)
+   --------------------------------------------------------- */
+body.dark-theme {
+  --bg-page: #0f0f10;
+  --bg-calc: #171717;
+  --bg-display: #242424;
+  --text-main: #FFFFFF;
+  --text-muted: #A0A0A0;
+  --btn-num: #2D2D2D;
+  --btn-num-hover: #383838;
+  --btn-op: #3A3A3A;
+  --btn-op-hover: #454545;
+  --btn-sci: #353535;
+  --btn-sci-hover: #404040;
+  --btn-equal: #4CAF50;
+  --btn-equal-hover: #43A047;
+  --btn-clear: #D9534F;
+  --btn-clear-hover: #C9302C;
+  --btn-history: #444444;
+  --btn-history-hover: #505050;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --shadow-card: 0 20px 45px rgba(0, 0, 0, 0.6), 0 4px 12px rgba(0, 0, 0, 0.4);
+  --modal-overlay: rgba(0, 0, 0, 0.75);
+}
+
+body.light-theme {
+  --bg-page: #E5E7EB;
+  --bg-calc: #F2F2F2;
+  --bg-display: #FFFFFF;
+  --text-main: #111111;
+  --text-muted: #666666;
+  --btn-num: #FFFFFF;
+  --btn-num-hover: #F0F0F0;
+  --btn-op: #E0E0E0;
+  --btn-op-hover: #D5D5D5;
+  --btn-sci: #D8D8D8;
+  --btn-sci-hover: #CDCDCD;
+  --btn-equal: #4CAF50;
+  --btn-equal-hover: #43A047;
+  --btn-clear: #D9534F;
+  --btn-clear-hover: #C9302C;
+  --btn-history: #CCCCCC;
+  --btn-history-hover: #BEBEBE;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --shadow-card: 0 20px 45px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+  --modal-overlay: rgba(0, 0, 0, 0.5);
+}
+
+/* ---------------------------------------------------------
+   Global Reset & Base
+   --------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 12px;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  user-select: none;
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 620px;
+}
+
+/* ---------------------------------------------------------
+   Calculator Card Container
+   --------------------------------------------------------- */
+.calculator-card {
+  background-color: var(--bg-calc);
+  width: 100%;
+  border-radius: var(--radius-lg);
+  padding: 28px 24px 24px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+/* Header */
+.calc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.calc-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-main);
+}
+
+.calc-title .icon {
+  font-size: 1.4rem;
+}
+
+.header-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.5px;
+}
+
+.memory-badge {
+  background-color: #f59e0b;
+  color: #000;
+  font-weight: 700;
+}
+
+.mode-badge {
+  background-color: var(--btn-op);
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------
+   Display Area
+   --------------------------------------------------------- */
+.display-container {
+  background-color: var(--bg-display);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 22px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  transition: background-color var(--transition-normal);
+}
+
+.sub-display {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  min-height: 1.3rem;
+  text-align: right;
+  overflow-x: auto;
+  white-space: nowrap;
+  margin-bottom: 6px;
+  scrollbar-width: none;
+}
+
+.sub-display::-webkit-scrollbar {
+  display: none;
+}
+
+.main-display-row {
+  width: 100%;
+}
+
+.main-display {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  text-align: right;
+  padding: 4px 0;
+  caret-color: var(--btn-equal);
+}
+
+.main-display::placeholder {
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
+/* ---------------------------------------------------------
+   Keypad Grid (6 columns matching Python Tkinter UI)
+   --------------------------------------------------------- */
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.btn {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 700;
+  height: 52px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  transition: background-color var(--transition-fast), transform 0.08s ease, filter var(--transition-fast);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active,
+.btn.keyboard-active {
+  transform: scale(0.94);
+  filter: brightness(0.9);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--btn-equal);
+  outline-offset: 2px;
+}
+
+/* Button Variants */
+.btn-num {
+  background-color: var(--btn-num);
+}
+.btn-num:hover {
+  background-color: var(--btn-num-hover);
+}
+
+.btn-op {
+  background-color: var(--btn-op);
+}
+.btn-op:hover {
+  background-color: var(--btn-op-hover);
+}
+
+.btn-sci {
+  background-color: var(--btn-sci);
+  font-size: 0.95rem;
+}
+.btn-sci:hover {
+  background-color: var(--btn-sci-hover);
+}
+
+.btn-equal {
+  background-color: var(--btn-equal);
+  color: #FFFFFF !important;
+}
+.btn-equal:hover {
+  background-color: var(--btn-equal-hover);
+}
+
+.btn-clear-all {
+  background-color: var(--btn-clear);
+  color: #FFFFFF !important;
+}
+.btn-clear-all:hover {
+  background-color: var(--btn-clear-hover);
+}
+
+.btn-history-action {
+  background-color: var(--btn-history);
+}
+.btn-history-action:hover {
+  background-color: var(--btn-history-hover);
+}
+
+.btn-span-3 {
+  grid-column: span 3;
+}
+
+/* ---------------------------------------------------------
+   Bottom Actions (AC, CE, ±, History)
+   --------------------------------------------------------- */
+.bottom-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.bottom-actions .btn {
+  height: 48px;
+  font-size: 1rem;
+}
+
+/* ---------------------------------------------------------
+   Theme Bar
+   --------------------------------------------------------- */
+.theme-bar {
+  display: flex;
+  justify-content: center;
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--btn-op);
+  color: var(--text-main);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px 28px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform 0.08s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--btn-op-hover);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.96);
+}
+
+/* ---------------------------------------------------------
+   Footer
+   --------------------------------------------------------- */
+.app-footer {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------
+   History Modal
+   --------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--modal-overlay);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+  opacity: 1;
+  transition: opacity var(--transition-normal);
+}
+
+.modal-overlay.hidden {
+  display: none;
+  opacity: 0;
+}
+
+.modal-card {
+  background-color: var(--bg-calc);
+  width: 100%;
+  max-width: 500px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+  animation: modalSlideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: color var(--transition-fast);
+}
+
+.modal-close-btn:hover {
+  color: var(--text-main);
+}
+
+.modal-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.history-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-item {
+  background-color: var(--bg-display);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  transition: background-color var(--transition-fast), transform 0.08s ease;
+}
+
+.history-item:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.history-expr {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.history-res {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--btn-equal);
+  text-align: right;
+}
+
+.history-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 30px 10px;
+  font-size: 0.95rem;
+}
+
+.modal-footer {
+  padding: 14px 20px;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-clear-history {
+  background-color: var(--btn-clear);
+  color: #FFFFFF;
+  padding: 10px 24px;
+  font-size: 0.95rem;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------------------------------------------------------
+   Toast Notification
+   --------------------------------------------------------- */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #D9534F;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: toastPop 0.2s ease;
+}
+
+.toast.hidden {
+  display: none;
+}
+
+@keyframes toastPop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 15px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------
+   Responsive adjustments
+   --------------------------------------------------------- */
+@media (max-width: 520px) {
+  body {
+    padding: 8px;
+  }
+
+  .calculator-card {
+    padding: 20px 14px 16px;
+    border-radius: 16px;
+  }
+
+  .main-display {
+    font-size: 1.7rem;
+  }
+
+  .keypad-grid {
+    gap: 6px;
+  }
+
+  .btn {
+    height: 46px;
+    font-size: 0.95rem;
+  }
+
+  .btn-sci {
+    font-size: 0.85rem;
+  }
+
+  .bottom-actions {
+    gap: 6px;
+  }
+
+  .bottom-actions .btn {
+    height: 44px;
+    font-size: 0.9rem;
+  }
+}
